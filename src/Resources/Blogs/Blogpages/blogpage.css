@@ -1,0 +1,162 @@
+.blog-page-box{
+    border-radius: 10px;
+    height: max-content;
+    width: 80%;
+    background: rgb(40, 39, 39);
+    padding: 1rem;
+    margin: auto;
+    margin-top: 2rem;
+}
+.blog-header{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    width: calc(100% - 3rem);
+    margin: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+    color: white;
+    height: auto;
+}
+.blog-header h1{
+    font-size: 2.4rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.blog-header p{
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.blog-para{
+    font-size: 1.2rem;
+    color: white;
+    margin: auto;
+    padding: 1.5rem;
+}
+
+.blog-para p {
+    text-align: justify;
+}
+
+.image-in-blog {
+    width: 80vh;
+    max-width: 300px;
+    margin: 10px auto; 
+    display: block; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.image-in-blog2 {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    max-height: 80vh;
+    margin: 10px auto;
+    display: block;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+    object-fit: cover; /* Ensures the image covers the container without stretching */
+}
+    .ttt{
+    background-image: url('./blog-images/ttt_img2.png');
+}
+.louvre {
+    background-image: url('./blog-images/louvre.jpg');
+}
+.ai-fin {
+    background-image: url('./blog-images/aifin-img.png');
+}
+
+.fintech {
+    background-image: url('./blog-images/tech.webp'); 
+}
+
+.bid {
+    background-image: url('./blog-images/bid-img.jpeg');
+}
+
+.finlit {
+    background-image: url('./blog-images/finlit-img.png');
+}
+
+.liqui {
+    background-image: url('./blog-images/liq-img.jpeg');
+}
+
+.compound {
+    background-image: url('./blog-images/comp-img.png');
+}
+.indiaUpiSys{
+    background-image: url('./blog-images/IndiaUPISys.png');
+}
+.gold{
+    background-image: url('./blog-images/gold.jpeg');
+}
+.goldhistory{
+    background-image: url('./blog-images/goldy.jfif');
+}
+.dhanteras {
+    background-image: url('./blog-images/dhanteras-image.avif');
+}
+.gold-on-dhanteras {
+    background-image: url('./blog-images/dhanteras.webp');
+}
+.uselection{
+    background-image: url('./blog-images/11_Uselection.jpg');
+}
+.investment_guide{
+    background-image: url('./blog-images//investment.png');
+}
+.bnpl{
+    background-image: url('./blog-images/comp-img.png');
+}
+
+.crypto{
+    background-image: url('./blog-images/crypto.jpg');
+}
+
+.stockmarket{
+    background-image: url('./blog-images/stockmarket.png');
+}
+.digital{
+    background-image: url('./blog-images/digital.webp');
+}
+
+.Economy{
+    background-image: url('./blog-images/indiaEco.jpg');
+}
+
+.economic{
+    background-image: url('./blog-images/indiaeconomic.jpg');
+}
+.ustariff{
+    background-image: url('./blog-images/tariff-banner.jpg');
+}
+
+
+@media screen and (max-width:650px) {
+    .blog-page-box{
+        width: 99vw;
+        padding: 5px;
+        margin-top: 12px;
+    }
+    .blog-header{
+        margin: auto;
+        margin-top: 20px;
+    }
+    .blog-para{
+        font-size: 1rem;
+        padding: 12px;
+    }
+    
+}
+@media screen and (max-width:350px) {
+    .blog-header p{
+        display: none;
+    }   
+}

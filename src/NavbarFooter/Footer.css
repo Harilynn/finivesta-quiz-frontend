@@ -1,0 +1,118 @@
+.footer { 
+    background-color: #222222;
+ 
+} 
+
+.vertical-line {
+    position: relative;
+    height: 0.1px;
+    width: 80vw;
+    background-color: #5f8e33;
+    margin: 5vh 10vw;
+}
+
+.socialdiv {
+    display: grid;
+    font-family: 'Poppins', sans-serif;
+    color: #fff1f1;
+    background-color: #010100; 
+    text-align: center; 
+    height: auto;
+    justify-content: center;
+    padding-bottom: 2em;
+    position: relative;
+    justify-items: center;
+}
+
+.socialdiv p {
+    font-size: 35px;
+    padding: 5px 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    color: #5f8e33;
+    font-weight: bold;
+}
+
+.social-icon {
+    padding: 5px 0px;
+    display: grid;
+    gap: 10px;
+    text-align: center;
+    width: 260px;
+    justify-self: center;
+    align-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+}
+
+.icon-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: #bdbdbd;
+    border-radius: 50%;
+    color: #222222;
+    text-decoration: none;
+}
+
+.icon-circle i {
+    font-size: 20px;
+}
+
+.text-footer { 
+    text-align: center; 
+    padding: 15px; 
+    padding-bottom: 30px;
+    font-size: 17px;
+    font-family:'Poppins', sans-serif; 
+    display: flex; 
+    justify-content: center; 
+    color: #898989; 
+    margin-block-start: 0;
+    margin-block-end: 0;
+} 
+
+.fbut {
+    color: #5f8e33;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    padding: 5px 2px;
+    font-size: 17px;
+}
+
+.section {
+    background-size: cover;
+    background-position: center;
+}
+
+
+.footer-content {
+    display: flex;
+    text-align: center;
+    gap: 30px;
+    padding: 15px 5px; 
+    box-sizing: border-box;
+    justify-content: center;
+    padding-top: 30px;
+}
+
+.footer-content a {
+    transition: 0.2s all ease-in-out;
+}
+.footer-content:hover a {
+    opacity: 0.4;
+}
+
+.footer-content a:hover {
+    opacity: 1;
+    color: #fff;
+}
+
+@media (max-width: 590px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 0px;
+    }
+}

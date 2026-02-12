@@ -1,0 +1,113 @@
+.book-page-box{
+    border-radius: 10px;
+    height: max-content;
+    width: 80%;
+    background: rgb(40, 39, 39);
+    /* padding: 0.5rem; */
+    margin: auto;
+    margin-top: 2rem;
+    padding: 10px;
+}
+.book-header{
+    padding: 20px;
+    width: 100%; 
+   display: flex;
+   flex-direction: column;
+   /* justify-content: center;  */
+   align-items: center;
+    /* position: relative; */
+    color: #fff;
+}
+.book-header img{
+    height: 400px;
+    max-height: 98vw;
+    object-fit: contain;
+    display: block; 
+}
+.book-title{
+    font-size: 1.5rem; 
+    color: #fff; 
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    /* position: relative; */
+    align-items: center;
+    width: 100%;
+}
+.book-header h1{
+    font-size: 1.4rem;
+}
+.book-header p{
+    font-size: 1.2rem;
+    font-weight: 500;
+    /* position: absolute; */
+}
+.book-para{
+    font-size: 1.2rem;
+    color: white;
+    margin: auto;
+    padding: 2rem;
+    padding-bottom: 3rem;
+    padding-top: 1rem;
+    text-align: justify;
+}
+
+.book-para p {
+    text-align: justify;
+}
+
+.author{
+  margin-bottom:30px;
+}
+
+.review-switch {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.review-switch-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 10px 0;
+  border-radius: 0;
+  transition: color 0.2s, border-bottom 0.2s;
+  text-decoration: none;
+  flex: 1 1 0;
+  text-align: center;
+  min-width: 0;
+}
+
+.review-switch-btn.active,
+.review-switch-btn:disabled {
+  color: #fff;
+  border-bottom: 3px solid #5f8e33;
+  cursor: default;
+  text-decoration: none;
+}
+
+.review-switch-btn:not(.active):hover {
+  color: #e0e0e0;
+  text-decoration: underline;
+}
+
+@media screen and (max-width:650px) {
+    .book-page-box{
+        width: 99vw;
+        padding: 5px;
+        margin-top: 12px;
+    }
+    .book-header{
+        margin: auto;
+        padding: 15px;
+    }
+    .book-para{
+        font-size: 1rem;
+        padding: 12px;
+    }
+    
+}
