@@ -6,8 +6,10 @@ import "./Quiz.css";
 const QuizAdmin = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [settingsError, setSettingsError] = useState("");
+  const [settingsSuccess, setSettingsSuccess] = useState("");
+  const [questionError, setQuestionError] = useState("");
+  const [questionSuccess, setQuestionSuccess] = useState("");
   const [quizConfig, setQuizConfig] = useState({
     questionCount: 10,
     durationMs: 300000,
@@ -34,7 +36,6 @@ const QuizAdmin = () => {
 
   const loadQuestions = async () => {
     setLoading(true);
-    setError("");
     try {
       const data = await fetchAllQuestions();
       setQuestions(data.questions || []);
@@ -46,7 +47,7 @@ const QuizAdmin = () => {
         });
       }
     } catch (err) {
-      setError(err.message || "Failed to load questions.");
+      console.error("Failed to load questions:", err);
     } finally {
       setLoading(false);
     }
@@ -69,28 +70,28 @@ const QuizAdmin = () => {
   };
 
   const handleSaveConfig = async () => {
-    setError("");
-    setSuccess("");
+    setSettingsError("");
+    setSettingsSuccess("");
     try {
       const durationMs = tempConfig.durationMinutes * 60000;
       await updateQuizSettings(tempConfig.questionCount, durationMs);
-      setSuccess("Quiz settings updated!");
+      setSettingsSuccess("Quiz settings updated!");
       setEditingConfig(false);
       loadQuestions();
     } catch (err) {
-      setError(err.message || "Failed to update settings.");
+      setSettingsError(err.message || "Failed to update settings.");
     }
   };
 
   const handleCreateQuestion = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setQuestionError("");
+    setQuestionSuccess("");
 
     const { prompt, option1, option2, option3, option4, correctIndex, category } = formData;
 
     if (!prompt.trim() || !option1.trim() || !option2.trim() || !option3.trim() || !option4.trim()) {
-      setError("All fields are required.");
+      setQuestionError("All fields are required.");
       return;
     }
 
@@ -102,7 +103,7 @@ const QuizAdmin = () => {
         category,
       });
 
-      setSuccess("Question created successfully!");
+      setQuestionSuccess("Question created successfully!");
       setFormData({
         prompt: "",
         option1: "",
@@ -115,21 +116,21 @@ const QuizAdmin = () => {
 
       loadQuestions();
     } catch (err) {
-      setError(err.message || "Failed to create question.");
+      setQuestionError(err.message || "Failed to create question.");
     }
   };
 
   const handleDeleteQuestion = async (id) => {
     if (!window.confirm("Delete this question?")) return;
 
-    setError("");
-    setSuccess("");
+    setQuestionError("");
+    setQuestionSuccess("");
     try {
       await deleteQuestion(id);
-      setSuccess("Question deleted.");
+      setQuestionSuccess("Question deleted.");
       loadQuestions();
     } catch (err) {
-      setError(err.message || "Failed to delete question.");
+      setQuestionError(err.message || "Failed to delete question.");
     }
   };
 
@@ -140,7 +141,7 @@ const QuizAdmin = () => {
         <p className="quiz-subtitle">Create and manage quiz questions. All changes apply in real time.</p>
 
         <div className="quiz-card">
-          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "12px" }}>Quiz Settings</h2>
+          <h2 style={{ color: "var(--quiz-gold-600)", marginBottom: "12px" }}>Quiz Settings</h2>
           
           {!editingConfig ? (
             <>
@@ -194,6 +195,8 @@ const QuizAdmin = () => {
                   />
                 </div>
               </div>
+              {settingsError && <div className="quiz-alert" style={{ marginTop: "12px" }}>{settingsError}</div>}
+              {settingsSuccess && <div className="quiz-alert" style={{ marginTop: "12px", color: "#b4ffb4" }}>{settingsSuccess}</div>}
               <div className="quiz-actions">
                 <button className="quiz-button gold" onClick={handleSaveConfig}>
                   <FaSave style={{ marginRight: "8px" }} />
@@ -208,7 +211,7 @@ const QuizAdmin = () => {
         </div>
 
         <div className="quiz-card" style={{ marginTop: "28px" }}>
-          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>Create New Question</h2>
+          <h2 style={{ color: "var(--quiz-gold-600)", marginBottom: "16px" }}>Create New Question</h2>
           <form onSubmit={handleCreateQuestion}>
             <div className="quiz-grid" style={{ marginBottom: "16px" }}>
               <input
@@ -279,8 +282,8 @@ const QuizAdmin = () => {
               />
             </div>
 
-            {error && <div className="quiz-alert">{error}</div>}
-            {success && <div className="quiz-alert" style={{ color: "#b4ffb4" }}>{success}</div>}
+            {questionError && <div className="quiz-alert">{questionError}</div>}
+            {questionSuccess && <div className="quiz-alert" style={{ color: "#b4ffb4" }}>{questionSuccess}</div>}
 
             <button type="submit" className="quiz-button gold" style={{ marginTop: "12px" }}>
               <FaPlus style={{ marginRight: "8px" }} />
@@ -290,7 +293,7 @@ const QuizAdmin = () => {
         </div>
 
         <div className="quiz-card" style={{ marginTop: "28px" }}>
-          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>
+          <h2 style={{ color: "var(--quiz-gold-600)", marginBottom: "16px" }}>
             Existing Questions ({questions.length})
           </h2>
 
