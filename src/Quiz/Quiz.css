@@ -23,19 +23,10 @@
   font-family: "Space Grotesk", "Manrope", sans-serif;
   position: relative;
   overflow: hidden;
-  background: 
-    radial-gradient(circle at 15% 15%, rgba(92, 146, 44, 0.45), transparent 50%),
-    radial-gradient(circle at 85% 25%, rgba(113, 177, 57, 0.35), transparent 55%),
-    radial-gradient(circle at 50% 80%, rgba(58, 107, 26, 0.4), transparent 60%),
-    radial-gradient(circle at 25% 60%, rgba(140, 212, 79, 0.25), transparent 45%),
-    linear-gradient(135deg, 
-      var(--quiz-green-900) 0%, 
-      var(--quiz-green-850) 25%, 
-      var(--quiz-green-800) 50%, 
-      var(--quiz-green-700) 75%, 
-      var(--quiz-green-800) 100%);
-  background-size: 400% 400%;
-  animation: quizGradientShift 20s ease-in-out infinite;
+  background: radial-gradient(circle at 20% 20%, rgba(92, 146, 44, 0.35), transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(113, 177, 57, 0.25), transparent 60%),
+    linear-gradient(120deg, #222222, #222222 35%, #222222 65%, #222222 100%);
+  animation: quizGradientShift 18s ease-in-out infinite;
 }
 
 .quiz-shell::before {
