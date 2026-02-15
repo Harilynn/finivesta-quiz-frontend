@@ -25,7 +25,8 @@
   overflow: hidden;
   background: radial-gradient(circle at 20% 20%, rgba(92, 146, 44, 0.35), transparent 55%),
     radial-gradient(circle at 80% 30%, rgba(113, 177, 57, 0.25), transparent 60%),
-    linear-gradient(120deg, #222222, #222222 35%, #222222 65%, #222222 100%);
+    linear-gradient(120deg, #1a1a1a, #1f2b1a 35%, #243520 65%, #1a1a1a 100%);
+  background-size: 200% 200%;
   animation: quizGradientShift 18s ease-in-out infinite;
 }
 
@@ -35,13 +36,13 @@
   inset: -20%;
   background: 
     conic-gradient(from 180deg at 50% 50%, 
-      rgba(92, 146, 44, 0.2), 
-      rgba(113, 177, 57, 0.25),
-      rgba(58, 107, 26, 0.3),
-      rgba(140, 212, 79, 0.2),
-      rgba(92, 146, 44, 0.2));
-  animation: quizAura 18s linear infinite;
-  opacity: 0.8;
+      rgba(92, 146, 44, 0.18), 
+      rgba(113, 177, 57, 0.22),
+      rgba(58, 107, 26, 0.25),
+      rgba(140, 212, 79, 0.15),
+      rgba(92, 146, 44, 0.18));
+  animation: quizAura 20s linear infinite;
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -49,10 +50,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ccircle cx='120' cy='120' r='2' fill='rgba(113,177,57,0.35)'/%3E%3Ccircle cx='60' cy='60' r='1.5' fill='rgba(92,146,44,0.3)'/%3E%3Ccircle cx='180' cy='40' r='1.5' fill='rgba(140,212,79,0.28)'/%3E%3Ccircle cx='200' cy='180' r='1.5' fill='rgba(92,146,44,0.3)'/%3E%3Ccircle cx='40' cy='180' r='1.5' fill='rgba(113,177,57,0.3)'/%3E%3Ccircle cx='150' cy='200' r='1' fill='rgba(140,212,79,0.25)'/%3E%3Ccircle cx='30' cy='100' r='1' fill='rgba(92,146,44,0.28)'/%3E%3C/svg%3E");
-  opacity: 0.7;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ccircle cx='120' cy='120' r='2' fill='rgba(113,177,57,0.4)'/%3E%3Ccircle cx='60' cy='60' r='1.5' fill='rgba(92,146,44,0.35)'/%3E%3Ccircle cx='180' cy='40' r='1.5' fill='rgba(140,212,79,0.32)'/%3E%3Ccircle cx='200' cy='180' r='1.5' fill='rgba(92,146,44,0.35)'/%3E%3Ccircle cx='40' cy='180' r='1.5' fill='rgba(113,177,57,0.35)'/%3E%3Ccircle cx='150' cy='200' r='1' fill='rgba(140,212,79,0.3)'/%3E%3Ccircle cx='30' cy='100' r='1' fill='rgba(92,146,44,0.32)'/%3E%3Ccircle cx='90' cy='160' r='1.5' fill='rgba(113,177,57,0.35)'/%3E%3Ccircle cx='210' cy='120' r='1' fill='rgba(140,212,79,0.28)'/%3E%3C/svg%3E");
+  opacity: 0.8;
   pointer-events: none;
-  animation: patternDrift 30s linear infinite;
+  animation: patternDrift 35s ease-in-out infinite;
 }
 
 .quiz-shell.urgent .quiz-alarm {
@@ -119,19 +120,10 @@
   font-size: clamp(2rem, 4vw, 3.4rem);
   letter-spacing: 0.12rem;
   text-transform: uppercase;
-  background: linear-gradient(135deg, 
-    var(--quiz-gold-300) 0%, 
-    var(--quiz-gold-400) 35%, 
-    var(--quiz-gold-500) 65%, 
-    var(--quiz-gold-400) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--quiz-gold-600);
   margin-bottom: 12px;
-  text-shadow: 0 0 30px rgba(113, 177, 57, 0.5);
-  filter: drop-shadow(0 0 20px rgba(92, 146, 44, 0.4));
-  animation: quizTitleIn 0.8s ease both, gradientText 4s linear infinite;
+  text-shadow: 0 0 25px rgba(92, 146, 44, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: quizTitleIn 0.8s ease both;
 }
 
 .quiz-subtitle {
@@ -584,8 +576,14 @@
   0% {
     background-position: 0% 50%;
   }
+  25% {
+    background-position: 50% 100%;
+  }
   50% {
     background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
   }
   100% {
     background-position: 0% 50%;
@@ -708,13 +706,16 @@
 
 @keyframes patternDrift {
   0% {
-    transform: translate(0, 0);
+    transform: translate(0, 0) scale(1);
   }
-  50% {
-    transform: translate(20px, 10px);
+  33% {
+    transform: translate(15px, -10px) scale(1.05);
+  }
+  66% {
+    transform: translate(-10px, 15px) scale(0.95);
   }
   100% {
-    transform: translate(0, 0);
+    transform: translate(0, 0) scale(1);
   }
 }
 
