@@ -8,6 +8,10 @@ const QuizAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [quizConfig, setQuizConfig] = useState({
+    questionCount: 8,
+    durationMs: 240000,
+  });
 
   const [formData, setFormData] = useState({
     prompt: "",
@@ -17,7 +21,6 @@ const QuizAdmin = () => {
     option4: "",
     correctIndex: 0,
     category: "Finance",
-    difficulty: "Medium",
   });
 
   useEffect(() => {
@@ -30,6 +33,9 @@ const QuizAdmin = () => {
     try {
       const data = await fetchAllQuestions();
       setQuestions(data.questions || []);
+      if (data.config) {
+        setQuizConfig(data.config);
+      }
     } catch (err) {
       setError(err.message || "Failed to load questions.");
     } finally {
@@ -47,10 +53,7 @@ const QuizAdmin = () => {
 
   const handleCreateQuestion = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    const { prompt, option1, option2, option3, option4, correctIndex, category, difficulty } = formData;
+    setError(""); } = formData;
 
     if (!prompt.trim() || !option1.trim() || !option2.trim() || !option3.trim() || !option4.trim()) {
       setError("All fields are required.");
@@ -63,7 +66,6 @@ const QuizAdmin = () => {
         options: [option1.trim(), option2.trim(), option3.trim(), option4.trim()],
         correctIndex,
         category,
-        difficulty,
       });
 
       setSuccess("Question created successfully!");
@@ -73,6 +75,8 @@ const QuizAdmin = () => {
         option2: "",
         option3: "",
         option4: "",
+        correctIndex: 0,
+        category: "Finance
         correctIndex: 0,
         category: "Finance",
         difficulty: "Medium",
@@ -107,7 +111,28 @@ const QuizAdmin = () => {
         <div className="quiz-card">
           <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>Create New Question</h2>
           <form onSubmit={handleCreateQuestion}>
-            <div className="quiz-grid" style={{ marginBottom: "16px" }}>
+            <div className="quiz-grid" style={{ marginBottom: "16px" }2px" }}>Quiz Settings</h2>
+          <div className="quiz-grid" style={{ marginBottom: "16px" }}>
+            <div>
+              <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Questions per Quiz</p>
+              <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
+                {quizConfig.questionCount}
+              </p>
+            </div>
+            <div>
+              <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Quiz Duration</p>
+              <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
+                {Math.floor(quizConfig.durationMs / 60000)}m {Math.floor((quizConfig.durationMs % 60000) / 1000)}s
+              </p>
+            </div>
+          </div>
+          <p style={{ color: "var(--quiz-muted)", fontSize: "0.85rem" }}>
+            To change quiz settings, update QUIZ_QUESTION_COUNT and QUIZ_DURATION_MS in your backend environment variables and redeploy.
+          </p>
+        </div>
+
+        <div className="quiz-card"  style={{ marginTop: "28px" }}>
+          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "1}>
               <input
                 className="quiz-input"
                 type="text"
@@ -155,12 +180,6 @@ const QuizAdmin = () => {
                 value={formData.option4}
                 onChange={handleInputChange}
                 required
-              />
-            </div>
-
-            <div className="quiz-grid" style={{ marginBottom: "16px" }}>
-              <select className="quiz-input" name="correctIndex" value={formData.correctIndex} onChange={handleInputChange}>
-                <option value={0}>Correct: Option 1</option>
                 <option value={1}>Correct: Option 2</option>
                 <option value={2}>Correct: Option 3</option>
                 <option value={3}>Correct: Option 4</option>
