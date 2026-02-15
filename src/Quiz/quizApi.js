@@ -98,3 +98,19 @@ export const deleteQuestion = async (id) => {
   });
   return handleResponse(res);
 };
+
+// Admin: Update quiz settings
+export const updateQuizSettings = async (questionCount, durationMs) => {
+  const res = await fetch(`${API_BASE}/quiz/admin/settings`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      adminCode: "LongLiveAdmins01234",
+      questionCount,
+      durationMs,
+    }),
+  });
+  return handleResponse(res);
+};
