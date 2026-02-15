@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -147,7 +148,7 @@ const AppContent = () => {
       <Layout>
       <PopupMessage />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/quiz" replace />} />
           <Route path="/events" element={<Events />} />
           <Route path="/sponsors" element={<Sponsor />} />
           <Route path="/hackathon" element={<Hackathon/>}/>
