@@ -146,7 +146,7 @@ const AppContent = () => {
       </Helmet>
       {!isGameFullScreen && <Navbar />}
       <Layout>
-      <PopupMessage />
+      {!isGameFullScreen && <PopupMessage />}
         <Routes>
           <Route path="/" element={<Navigate to="/quiz" replace />} />
           <Route path="/events" element={<Events />} />

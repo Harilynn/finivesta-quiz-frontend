@@ -40,7 +40,7 @@ const QuizLanding = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [resumeReady, setResumeReady] = useState(false);
-  const floatingProps = useMemo(() => buildFloatingIconProps(14), []);
+  const floatingProps = useMemo(() => buildFloatingIconProps(22), []);
 
   useEffect(() => {
     // Clear access on component mount to force passcode re-entry
@@ -137,7 +137,14 @@ const QuizLanding = () => {
       <div className="quiz-floating-icons">
         {floatingProps.map((props, index) => {
           const Icon = floatingIcons[index % floatingIcons.length];
-          const className = props.twinkle ? "quiz-floating-icon quiz-twinkle" : "quiz-floating-icon";
+          const className = [
+            "quiz-floating-icon",
+            props.twinkle ? "quiz-twinkle" : "",
+            index % 3 === 0 ? "quiz-glow" : "",
+            index % 4 === 0 ? "quiz-drift" : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
           return (
             <span
               key={`icon-${index}`}
