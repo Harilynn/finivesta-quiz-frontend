@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaTrash, FaCheckCircle, FaSave } from "react-icons/fa";
 import { createQuestion, fetchAllQuestions, deleteQuestion, updateQuizSettings } from "./quizApi";
+import QuizBackground from "./QuizBackground";
 import "./Quiz.css";
 
 const QuizAdmin = () => {
@@ -136,6 +137,7 @@ const QuizAdmin = () => {
 
   return (
     <div className="quiz-shell">
+      <QuizBackground count={20} />
       <div className="quiz-container">
         <h1 className="quiz-title">Admin Panel</h1>
         <p className="quiz-subtitle">Create and manage quiz questions. All changes apply in real time.</p>

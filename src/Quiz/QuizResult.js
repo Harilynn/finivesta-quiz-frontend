@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import QuizBackground from "./QuizBackground";
 import "./Quiz.css";
 
 const formatDuration = (ms) => {
@@ -26,6 +27,7 @@ const QuizResult = () => {
   if (!result) {
     return (
       <div className="quiz-shell">
+        <QuizBackground count={18} />
         <div className="quiz-container">
           <div className="quiz-card">Your result will appear here once the quiz is complete.</div>
         </div>
@@ -35,6 +37,7 @@ const QuizResult = () => {
 
   return (
     <div className="quiz-shell">
+      <QuizBackground count={18} />
       <div className="quiz-container">
         <h1 className="quiz-title">Congratulations</h1>
         <p className="quiz-subtitle">Your score is locked. View the leaderboard when you are ready.</p>
