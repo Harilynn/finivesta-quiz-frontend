@@ -34,6 +34,9 @@ const QuizLanding = () => {
   const [accessGranted, setAccessGranted] = useState(
     () => sessionStorage.getItem("quizAccessGranted") === "true"
   );
+  const [adminCode, setAdminCode] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [showAdminGate, setShowAdminGate] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [organization, setOrganization] = useState("");
@@ -132,6 +135,25 @@ const QuizLanding = () => {
     navigate("/quiz/play");
   };
 
+  const handleAdminAccess = () => {
+    if (adminCode === "LongLiveAdmins01234") {
+      sessionStorage.setItem("quizAdminGranted", "true");
+      navigate("/quiz/admin");
+      return;
+    }
+    setAdminError("Invalid admin code.");
+  };
+
+  const handleShowAdminGate = () => {
+    setShowAdminGate(true);
+  };
+
+  const handleBackToMain = () => {
+    setShowAdminGate(false);
+    setAdminCode("");
+    setAdminError("");
+  };
+
   return (
     <div className="quiz-shell">
       <div className="quiz-floating-icons">
@@ -186,15 +208,39 @@ const QuizLanding = () => {
               </button>
             </div>
           </div>
+        ) : showAdminGate ? (
+          <div className="quiz-card quiz-gate">
+            <h1 className="quiz-title">Admin Access</h1>
+            <p className="quiz-subtitle">
+              Enter the admin passcode to create and manage quiz questions.
+            </p>
+            <input
+              className="quiz-input"
+              type="password"
+              placeholder="Enter admin passcode"
+              value={adminCode}
+              onChange={(event) => setAdminCode(event.target.value)}
+            />
+            {adminError && <div className="quiz-alert quiz-gate-message">{adminError}</div>}
+            <div className="quiz-actions">
+              <button className="quiz-button gold" onClick={handleAdminAccess}>
+                Enter Admin Panel
+              </button>
+              <button className="quiz-button ghost" onClick={handleBackToMain}>
+                Back to Quiz
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             <h1 className="quiz-title">Finivesta Vault Quiz</h1>
             <p className="quiz-subtitle">
               A secure, finance-first challenge with randomized questions, server-verified timing, and a
-              live leaderboard. Enter your details to begin.
+              live leaderboard. Choose your mode below.
             </p>
 
             <div className="quiz-card">
+              <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>Play Quiz</h2>
               <div className="quiz-grid">
                 <input
                   className="quiz-input"
@@ -249,6 +295,16 @@ const QuizLanding = () => {
                   <span>05</span> Leaderboard ranks by score, then by fastest completion time.
                 </div>
               </div>
+            </div>
+
+            <div className="quiz-card" style={{ marginTop: "24px" }}>
+              <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "12px" }}>Admin Panel</h2>
+              <p style={{ color: "var(--quiz-muted)", marginBottom: "16px" }}>
+                Manage quiz questions, set time limits, and configure the quiz.
+              </p>
+              <button className="quiz-button ghost" onClick={handleShowAdminGate}>
+                Access Admin Panel
+              </button>
             </div>
           </>
         )}

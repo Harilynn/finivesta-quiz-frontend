@@ -63,3 +63,38 @@ export const streamLeaderboard = (onMessage, onError) => {
   };
   return eventSource;
 };
+
+// Admin: Create question
+export const createQuestion = async (payload) => {
+  const res = await fetch(`${API_BASE}/quiz/admin/questions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      adminCode: "LongLiveAdmins01234",
+      ...payload,
+    }),
+  });
+  return handleResponse(res);
+};
+
+// Admin: Fetch all questions
+export const fetchAllQuestions = async () => {
+  const res = await fetch(`${API_BASE}/quiz/admin/questions?adminCode=LongLiveAdmins01234`);
+  return handleResponse(res);
+};
+
+// Admin: Delete question
+export const deleteQuestion = async (id) => {
+  const res = await fetch(`${API_BASE}/quiz/admin/questions/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      adminCode: "LongLiveAdmins01234",
+    }),
+  });
+  return handleResponse(res);
+};
