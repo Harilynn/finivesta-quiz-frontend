@@ -178,8 +178,6 @@
     0 0 50px rgba(113, 177, 57, 0.35),
     inset 0 1px 0 rgba(113, 177, 57, 0.2);
 }
-  box-shadow: 0 28px 70px rgba(10, 10, 10, 0.7), 0 0 38px rgba(92, 146, 44, 0.3);
-}
 
 .quiz-card::before {
   content: "";
