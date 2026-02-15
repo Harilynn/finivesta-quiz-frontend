@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaTrash, FaCheckCircle } from "react-icons/fa";
-import { createQuestion, fetchAllQuestions, deleteQuestion } from "./quizApi";
+import { FaPlus, FaTrash, FaCheckCircle, FaSave } from "react-icons/fa";
+import { createQuestion, fetchAllQuestions, deleteQuestion, updateQuizSettings } from "./quizApi";
 import "./Quiz.css";
 
 const QuizAdmin = () => {
@@ -9,8 +9,13 @@ const QuizAdmin = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [quizConfig, setQuizConfig] = useState({
-    questionCount: 8,
-    durationMs: 240000,
+    questionCount: 10,
+    durationMs: 300000,
+  });
+  const [editingConfig, setEditingConfig] = useState(false);
+  const [tempConfig, setTempConfig] = useState({
+    questionCount: 10,
+    durationMinutes: 5,
   });
 
   const [formData, setFormData] = useState({
@@ -35,6 +40,10 @@ const QuizAdmin = () => {
       setQuestions(data.questions || []);
       if (data.config) {
         setQuizConfig(data.config);
+        setTempConfig({
+          questionCount: data.config.questionCount,
+          durationMinutes: Math.floor(data.config.durationMs / 60000),
+        });
       }
     } catch (err) {
       setError(err.message || "Failed to load questions.");
@@ -51,9 +60,34 @@ const QuizAdmin = () => {
     }));
   };
 
+  const handleConfigChange = (e) => {
+    const { name, value } = e.target;
+    setTempConfig((prev) => ({
+      ...prev,
+      [name]: parseInt(value, 10),
+    }));
+  };
+
+  const handleSaveConfig = async () => {
+    setError("");
+    setSuccess("");
+    try {
+      const durationMs = tempConfig.durationMinutes * 60000;
+      await updateQuizSettings(tempConfig.questionCount, durationMs);
+      setSuccess("Quiz settings updated!");
+      setEditingConfig(false);
+      loadQuestions();
+    } catch (err) {
+      setError(err.message || "Failed to update settings.");
+    }
+  };
+
   const handleCreateQuestion = async (e) => {
     e.preventDefault();
-    setError(""); } = formData;
+    setError("");
+    setSuccess("");
+
+    const { prompt, option1, option2, option3, option4, correctIndex, category } = formData;
 
     if (!prompt.trim() || !option1.trim() || !option2.trim() || !option3.trim() || !option4.trim()) {
       setError("All fields are required.");
@@ -76,10 +110,7 @@ const QuizAdmin = () => {
         option3: "",
         option4: "",
         correctIndex: 0,
-        category: "Finance
-        correctIndex: 0,
         category: "Finance",
-        difficulty: "Medium",
       });
 
       loadQuestions();
@@ -109,30 +140,77 @@ const QuizAdmin = () => {
         <p className="quiz-subtitle">Create and manage quiz questions. All changes apply in real time.</p>
 
         <div className="quiz-card">
-          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>Create New Question</h2>
-          <form onSubmit={handleCreateQuestion}>
-            <div className="quiz-grid" style={{ marginBottom: "16px" }2px" }}>Quiz Settings</h2>
-          <div className="quiz-grid" style={{ marginBottom: "16px" }}>
-            <div>
-              <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Questions per Quiz</p>
-              <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
-                {quizConfig.questionCount}
-              </p>
-            </div>
-            <div>
-              <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Quiz Duration</p>
-              <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
-                {Math.floor(quizConfig.durationMs / 60000)}m {Math.floor((quizConfig.durationMs % 60000) / 1000)}s
-              </p>
-            </div>
-          </div>
-          <p style={{ color: "var(--quiz-muted)", fontSize: "0.85rem" }}>
-            To change quiz settings, update QUIZ_QUESTION_COUNT and QUIZ_DURATION_MS in your backend environment variables and redeploy.
-          </p>
+          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "12px" }}>Quiz Settings</h2>
+          
+          {!editingConfig ? (
+            <>
+              <div className="quiz-grid" style={{ marginBottom: "16px" }}>
+                <div>
+                  <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Questions per Quiz</p>
+                  <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
+                    {quizConfig.questionCount}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Quiz Duration</p>
+                  <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
+                    {Math.floor(quizConfig.durationMs / 60000)} minutes
+                  </p>
+                </div>
+              </div>
+              <button className="quiz-button ghost" onClick={() => setEditingConfig(true)}>
+                Edit Settings
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="quiz-grid" style={{ marginBottom: "16px" }}>
+                <div>
+                  <label style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", display: "block", marginBottom: "6px" }}>
+                    Questions per Quiz
+                  </label>
+                  <input
+                    className="quiz-input"
+                    type="number"
+                    name="questionCount"
+                    min="1"
+                    max="100"
+                    value={tempConfig.questionCount}
+                    onChange={handleConfigChange}
+                  />
+                </div>
+                <div>
+                  <label style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", display: "block", marginBottom: "6px" }}>
+                    Duration (minutes)
+                  </label>
+                  <input
+                    className="quiz-input"
+                    type="number"
+                    name="durationMinutes"
+                    min="1"
+                    max="120"
+                    value={tempConfig.durationMinutes}
+                    onChange={handleConfigChange}
+                  />
+                </div>
+              </div>
+              <div className="quiz-actions">
+                <button className="quiz-button gold" onClick={handleSaveConfig}>
+                  <FaSave style={{ marginRight: "8px" }} />
+                  Save Settings
+                </button>
+                <button className="quiz-button ghost" onClick={() => setEditingConfig(false)}>
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="quiz-card"  style={{ marginTop: "28px" }}>
-          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "1}>
+        <div className="quiz-card" style={{ marginTop: "28px" }}>
+          <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "16px" }}>Create New Question</h2>
+          <form onSubmit={handleCreateQuestion}>
+            <div className="quiz-grid" style={{ marginBottom: "16px" }}>
               <input
                 className="quiz-input"
                 type="text"
@@ -180,6 +258,12 @@ const QuizAdmin = () => {
                 value={formData.option4}
                 onChange={handleInputChange}
                 required
+              />
+            </div>
+
+            <div className="quiz-grid" style={{ marginBottom: "16px" }}>
+              <select className="quiz-input" name="correctIndex" value={formData.correctIndex} onChange={handleInputChange}>
+                <option value={0}>Correct: Option 1</option>
                 <option value={1}>Correct: Option 2</option>
                 <option value={2}>Correct: Option 3</option>
                 <option value={3}>Correct: Option 4</option>
@@ -193,12 +277,6 @@ const QuizAdmin = () => {
                 value={formData.category}
                 onChange={handleInputChange}
               />
-
-              <select className="quiz-input" name="difficulty" value={formData.difficulty} onChange={handleInputChange}>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
             </div>
 
             {error && <div className="quiz-alert">{error}</div>}
@@ -258,7 +336,7 @@ const QuizAdmin = () => {
                         ))}
                       </div>
                       <p style={{ fontSize: "0.85rem", color: "var(--quiz-muted)" }}>
-                        {q.category} · {q.difficulty}
+                        {q.category}
                       </p>
                     </div>
                     <button
