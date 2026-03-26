@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaChartLine, FaCoins, FaLandmark, FaPiggyBank, FaWallet } from "react-icons/fa";
 import { GiReceiveMoney, GiPayMoney, GiStack } from "react-icons/gi";
-import { startQuiz, getSession } from "./quizApi";
+import { startQuiz, getSession, getLeaderboard, getLeaderboardQuizzes } from "./quizApi";
 import "./Quiz.css";
 
 const floatingIcons = [
@@ -26,6 +26,16 @@ const buildFloatingIconProps = (count) => {
   });
 };
 
+const formatDuration = (ms) => {
+  const clamped = Math.max(0, ms || 0);
+  const minutes = Math.floor(clamped / 60000);
+  const seconds = Math.floor((clamped % 60000) / 1000);
+  const milliseconds = Math.floor(clamped % 1000);
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}:${String(
+    milliseconds
+  ).padStart(3, "0")}`;
+};
+
 const QuizLanding = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,6 +53,11 @@ const QuizLanding = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [resumeReady, setResumeReady] = useState(false);
+  const [historyQuizzes, setHistoryQuizzes] = useState([]);
+  const [historyQuizNumber, setHistoryQuizNumber] = useState(1);
+  const [historyEntries, setHistoryEntries] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState("");
   const floatingProps = useMemo(() => buildFloatingIconProps(22), []);
 
   useEffect(() => {
@@ -83,6 +98,70 @@ const QuizLanding = () => {
       setError(location.state.error);
     }
   }, [location.state]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const hydrateHistory = async () => {
+      setHistoryLoading(true);
+      setHistoryError("");
+
+      try {
+        const quizData = await getLeaderboardQuizzes();
+        if (!mounted) return;
+
+        const quizzes = quizData.quizzes || [];
+        const fallbackQuizNumber = quizData.currentQuizNumber || 1;
+        const selectedQuizNumber = quizzes.length
+          ? quizzes[quizzes.length - 1].quizNumber
+          : fallbackQuizNumber;
+
+        setHistoryQuizzes(quizzes);
+        setHistoryQuizNumber(selectedQuizNumber);
+
+      } catch (err) {
+        if (!mounted) return;
+        setHistoryError("Could not load leaderboard history right now.");
+      } finally {
+        if (mounted) {
+          setHistoryLoading(false);
+        }
+      }
+    };
+
+    hydrateHistory();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!historyQuizNumber) return;
+
+    setHistoryLoading(true);
+    setHistoryError("");
+
+    getLeaderboard(8, historyQuizNumber)
+      .then((data) => {
+        if (!mounted) return;
+        setHistoryEntries(data.entries || []);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setHistoryError("Could not load the selected leaderboard.");
+      })
+      .finally(() => {
+        if (mounted) {
+          setHistoryLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [historyQuizNumber]);
 
   const handleAccess = () => {
     if (accessCode === "FiniMeansLife01234") {
@@ -305,6 +384,63 @@ const QuizLanding = () => {
               <button className="quiz-button ghost" onClick={handleShowAdminGate}>
                 Access Admin Panel
               </button>
+            </div>
+
+            <div className="quiz-card quiz-history-card" style={{ marginTop: "24px" }}>
+              <h2 style={{ color: "var(--quiz-gold-400)", marginBottom: "12px" }}>Leaderboard History</h2>
+              <p style={{ color: "var(--quiz-muted)", marginBottom: "16px" }}>
+                View previous quiz rankings anytime, even before starting a new attempt.
+              </p>
+
+              <div className="quiz-history-toolbar">
+                <label htmlFor="quiz-history-select" className="quiz-history-label">
+                  Select Quiz
+                </label>
+                <select
+                  id="quiz-history-select"
+                  className="quiz-input"
+                  value={historyQuizNumber}
+                  onChange={(event) => setHistoryQuizNumber(Number(event.target.value))}
+                  disabled={!historyQuizzes.length}
+                >
+                  {historyQuizzes.map((quiz) => (
+                    <option key={quiz.quizNumber} value={quiz.quizNumber}>
+                      {quiz.quizLabel}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {historyLoading ? <div>Loading leaderboard history...</div> : null}
+              {historyError ? <div className="quiz-alert">{historyError}</div> : null}
+
+              {!historyLoading && !historyEntries.length ? (
+                <div className="quiz-history-empty">No attempts recorded for this quiz yet.</div>
+              ) : null}
+
+              {!historyLoading && historyEntries.length ? (
+                <div className="quiz-history-list">
+                  {historyEntries.map((entry, index) => (
+                    <div key={entry.sessionId} className="quiz-history-item">
+                      <span>#{index + 1}</span>
+                      <span>{entry.playerName}</span>
+                      <span>
+                        {entry.score}/{entry.totalQuestions}
+                      </span>
+                      <span>{formatDuration(entry.timeTakenMs)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="quiz-actions">
+                <button
+                  className="quiz-button ghost"
+                  onClick={() => navigate("/quiz/leaderboard", { state: { quizNumber: historyQuizNumber } })}
+                >
+                  Open Full Leaderboard
+                </button>
+              </div>
             </div>
           </>
         )}

@@ -41,13 +41,24 @@ export const submitQuiz = async (payload) => {
   return handleResponse(res);
 };
 
-export const getLeaderboard = async (limit = 20) => {
-  const res = await fetch(`${API_BASE}/leaderboard?limit=${limit}`);
+export const getLeaderboard = async (limit = 20, quizNumber) => {
+  const query = new URLSearchParams({ limit: String(limit) });
+  if (quizNumber) {
+    query.set("quizNumber", String(quizNumber));
+  }
+
+  const res = await fetch(`${API_BASE}/leaderboard?${query.toString()}`);
   return handleResponse(res);
 };
 
-export const streamLeaderboard = (onMessage, onError) => {
-  const eventSource = new EventSource(`${API_BASE}/leaderboard/stream`);
+export const getLeaderboardQuizzes = async () => {
+  const res = await fetch(`${API_BASE}/leaderboard/quizzes`);
+  return handleResponse(res);
+};
+
+export const streamLeaderboard = (onMessage, onError, quizNumber) => {
+  const query = quizNumber ? `?quizNumber=${encodeURIComponent(quizNumber)}` : "";
+  const eventSource = new EventSource(`${API_BASE}/leaderboard/stream${query}`);
   eventSource.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
@@ -110,6 +121,19 @@ export const updateQuizSettings = async (questionCount, durationMs) => {
       adminCode: "LongLiveAdmins01234",
       questionCount,
       durationMs,
+    }),
+  });
+  return handleResponse(res);
+};
+
+export const advanceToNextQuiz = async () => {
+  const res = await fetch(`${API_BASE}/quiz/admin/quizzes/advance`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      adminCode: "LongLiveAdmins01234",
     }),
   });
   return handleResponse(res);
