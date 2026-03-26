@@ -39,6 +39,8 @@ const QuizAdmin = () => {
     category: "Finance",
   });
 
+  const exceedsAvailableQuestions = tempConfig.questionCount > questions.length;
+
   useEffect(() => {
     loadQuestions();
   }, []);
@@ -81,6 +83,14 @@ const QuizAdmin = () => {
   const handleSaveConfig = async () => {
     setSettingsError("");
     setSettingsSuccess("");
+
+    if (exceedsAvailableQuestions) {
+      setSettingsError(
+        `Question count cannot exceed available questions (${questions.length}).`
+      );
+      return;
+    }
+
     try {
       const durationMs = tempConfig.durationMinutes * 60000;
       await updateQuizSettings(tempConfig.questionCount, durationMs);
@@ -227,6 +237,11 @@ const QuizAdmin = () => {
                     value={tempConfig.questionCount}
                     onChange={handleConfigChange}
                   />
+                  {exceedsAvailableQuestions && (
+                    <div className="quiz-alert" style={{ marginTop: "8px" }}>
+                      You only have {questions.length} questions. Reduce this value or add more questions.
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", display: "block", marginBottom: "6px" }}>
@@ -246,7 +261,11 @@ const QuizAdmin = () => {
               {settingsError && <div className="quiz-alert" style={{ marginTop: "12px" }}>{settingsError}</div>}
               {settingsSuccess && <div className="quiz-alert" style={{ marginTop: "12px", color: "#b4ffb4" }}>{settingsSuccess}</div>}
               <div className="quiz-actions">
-                <button className="quiz-button gold" onClick={handleSaveConfig}>
+                <button
+                  className="quiz-button gold"
+                  onClick={handleSaveConfig}
+                  disabled={exceedsAvailableQuestions}
+                >
                   <FaSave style={{ marginRight: "8px" }} />
                   Save Settings
                 </button>
