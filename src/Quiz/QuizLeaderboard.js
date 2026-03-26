@@ -4,6 +4,8 @@ import { getLeaderboard, getLeaderboardQuizzes, streamLeaderboard } from "./quiz
 import QuizBackground from "./QuizBackground";
 import "./Quiz.css";
 
+const FULL_LEADERBOARD_LIMIT = "all";
+
 const formatDuration = (ms) => {
   const clamped = Math.max(0, ms);
   const minutes = Math.floor(clamped / 60000);
@@ -70,7 +72,7 @@ const QuizLeaderboard = () => {
     setLoading(true);
     setLoadError("");
 
-    getLeaderboard(20, quizNumber)
+    getLeaderboard(FULL_LEADERBOARD_LIMIT, quizNumber)
       .then((data) => {
         if (!mounted) return;
         setEntries(data.entries || []);
@@ -103,7 +105,8 @@ const QuizLeaderboard = () => {
         () => {
           setStreamActive(false);
         },
-        quizNumber
+        quizNumber,
+        FULL_LEADERBOARD_LIMIT
       );
     }
 
@@ -117,7 +120,7 @@ const QuizLeaderboard = () => {
   useEffect(() => {
     if (streamActive) return;
     const interval = setInterval(() => {
-      getLeaderboard(20, quizNumber)
+      getLeaderboard(FULL_LEADERBOARD_LIMIT, quizNumber)
         .then((data) => {
           setEntries(data.entries || []);
           setQuizLabel(data.quizLabel || `Quiz ${quizNumber}`);

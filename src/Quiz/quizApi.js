@@ -42,7 +42,10 @@ export const submitQuiz = async (payload) => {
 };
 
 export const getLeaderboard = async (limit = 20, quizNumber) => {
-  const query = new URLSearchParams({ limit: String(limit) });
+  const query = new URLSearchParams();
+  if (limit !== undefined && limit !== null && limit !== "") {
+    query.set("limit", String(limit));
+  }
   if (quizNumber) {
     query.set("quizNumber", String(quizNumber));
   }
@@ -56,8 +59,15 @@ export const getLeaderboardQuizzes = async () => {
   return handleResponse(res);
 };
 
-export const streamLeaderboard = (onMessage, onError, quizNumber) => {
-  const query = quizNumber ? `?quizNumber=${encodeURIComponent(quizNumber)}` : "";
+export const streamLeaderboard = (onMessage, onError, quizNumber, limit) => {
+  const params = new URLSearchParams();
+  if (quizNumber) {
+    params.set("quizNumber", String(quizNumber));
+  }
+  if (limit !== undefined && limit !== null && limit !== "") {
+    params.set("limit", String(limit));
+  }
+  const query = params.toString() ? `?${params.toString()}` : "";
   const eventSource = new EventSource(`${API_BASE}/leaderboard/stream${query}`);
   eventSource.onmessage = (event) => {
     try {
