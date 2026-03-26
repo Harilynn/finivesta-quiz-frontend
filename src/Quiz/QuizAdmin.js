@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaTrash, FaCheckCircle, FaSave } from "react-icons/fa";
-import { createQuestion, fetchAllQuestions, deleteQuestion, updateQuizSettings } from "./quizApi";
+import {
+  createQuestion,
+  fetchAllQuestions,
+  deleteQuestion,
+  updateQuizSettings,
+  advanceToNextQuiz,
+} from "./quizApi";
 import QuizBackground from "./QuizBackground";
 import "./Quiz.css";
 
@@ -11,9 +17,11 @@ const QuizAdmin = () => {
   const [settingsSuccess, setSettingsSuccess] = useState("");
   const [questionError, setQuestionError] = useState("");
   const [questionSuccess, setQuestionSuccess] = useState("");
+  const [advancingQuiz, setAdvancingQuiz] = useState(false);
   const [quizConfig, setQuizConfig] = useState({
     questionCount: 10,
     durationMs: 300000,
+    currentQuizNumber: 1,
   });
   const [editingConfig, setEditingConfig] = useState(false);
   const [tempConfig, setTempConfig] = useState({
@@ -135,6 +143,33 @@ const QuizAdmin = () => {
     }
   };
 
+  const handleAdvanceQuiz = async () => {
+    const confirmed = window.confirm(
+      "Advance to next quiz? New attempts will be saved under a new leaderboard."
+    );
+    if (!confirmed) return;
+
+    setSettingsError("");
+    setSettingsSuccess("");
+    setAdvancingQuiz(true);
+
+    try {
+      const response = await advanceToNextQuiz();
+      setQuizConfig((prev) => ({
+        ...prev,
+        currentQuizNumber: response.currentQuizNumber || prev.currentQuizNumber + 1,
+      }));
+      setSettingsSuccess(
+        `Advanced successfully. Current quiz is ${response.currentQuizLabel || `Quiz ${response.currentQuizNumber}`}.`
+      );
+      await loadQuestions();
+    } catch (err) {
+      setSettingsError(err.message || "Failed to advance quiz.");
+    } finally {
+      setAdvancingQuiz(false);
+    }
+  };
+
   return (
     <div className="quiz-shell">
       <QuizBackground count={20} />
@@ -160,10 +195,21 @@ const QuizAdmin = () => {
                     {Math.floor(quizConfig.durationMs / 60000)} minutes
                   </p>
                 </div>
+                <div>
+                  <p style={{ color: "var(--quiz-muted)", fontSize: "0.9rem", marginBottom: "6px" }}>Current Quiz Round</p>
+                  <p style={{ color: "var(--quiz-gold-400)", fontSize: "1.4rem", fontWeight: "600" }}>
+                    Quiz {quizConfig.currentQuizNumber || 1}
+                  </p>
+                </div>
               </div>
-              <button className="quiz-button ghost" onClick={() => setEditingConfig(true)}>
-                Edit Settings
-              </button>
+              <div className="quiz-actions">
+                <button className="quiz-button ghost" onClick={() => setEditingConfig(true)}>
+                  Edit Settings
+                </button>
+                <button className="quiz-button gold" onClick={handleAdvanceQuiz} disabled={advancingQuiz}>
+                  {advancingQuiz ? "Advancing..." : "Advance To Next Quiz"}
+                </button>
+              </div>
             </>
           ) : (
             <>
